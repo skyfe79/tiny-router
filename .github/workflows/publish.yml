@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
@@ -35,7 +35,7 @@ jobs:
 
       - name: Get current version
         id: package-version
-        run: echo "::set-output name=current::$(node -p "require('./package.json').version")"
+        run: echo "current=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
       - name: Bump minor version
         id: bump-version
@@ -60,7 +60,7 @@ jobs:
           fi
           
           new_version="$major.$new_minor.$new_patch"
-          echo "::set-output name=new::$new_version"
+          echo "new=$new_version" >> $GITHUB_OUTPUT
           npm version $new_version --no-git-tag-version
 
       - name: Build
