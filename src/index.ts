@@ -187,8 +187,8 @@ const createRouter = (): Router => {
       targetPath = path;
     }
 
-    // 경로 정규화: 마지막 슬래시 제거
-    targetPath = targetPath.endsWith('/') ? targetPath.slice(0, -1) : targetPath;
+    // 경로 정규화: 루트 경로가 아닌 경우에만 마지막 슬래시 제거
+    targetPath = targetPath === '/' ? targetPath : (targetPath.endsWith('/') ? targetPath.slice(0, -1) : targetPath);
     const pathWithoutQuery = targetPath.split('?')[0];
     const upperMethod = method.toUpperCase();
     

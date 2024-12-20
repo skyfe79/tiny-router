@@ -3,6 +3,19 @@ import createRouter from '../src/index';
 import type { RouteParams } from '../src/index';
 
 describe('Basic Routing', () => {
+
+  it('should handle root path', () => {
+    const router = createRouter();
+    let result: RouteParams | null = null;
+
+    router.map('/', (params) => {
+      result = params;
+    });
+
+    router.route('/');
+    expect(result).toEqual({});
+  });
+  
   it('should handle basic parameter routes', () => {
     const router = createRouter();
     let result: RouteParams | null = null;
