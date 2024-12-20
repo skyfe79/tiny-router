@@ -16,6 +16,8 @@ npm install tiny-router
 - Optional parameters (`:param?`)
 - Wildcard patterns (`*`)
 - Support for paths with hyphens (-) and dots (.)
+- Full HTTP method support (GET, POST, PUT, DELETE, etc.)
+- TypeScript support with detailed interfaces
 - Lightweight implementation
 
 ## Usage
@@ -192,31 +194,94 @@ router.map('/api/:resource', (params) => {
 ## TypeScript Support
 
 ```typescript
+// Route parameter interface
 interface RouteParams {
-  [key: string]: string;
+  [key: string]: string | string[] | undefined;
+  wildcards?: string[];  // Available when using multiple wildcards
+  wildcard?: string;     // Available when using single wildcard
 }
 
+// Route handler interface
 interface RouteHandler {
   (params: RouteParams): any | Promise<any>;
 }
 
-// Sync handler example
+// Router interface
+interface Router {
+  map: (pattern: string | RegExp, handler: RouteHandler) => void;
+  get: (pattern: string | RegExp, handler: RouteHandler) => void;
+  post: (pattern: string | RegExp, handler: RouteHandler) => void;
+  put: (pattern: string | RegExp, handler: RouteHandler) => void;
+  delete: (pattern: string | RegExp, handler: RouteHandler) => void;
+  head: (pattern: string | RegExp, handler: RouteHandler) => void;
+  options: (pattern: string | RegExp, handler: RouteHandler) => void;
+  patch: (pattern: string | RegExp, handler: RouteHandler) => void;
+  trace: (pattern: string | RegExp, handler: RouteHandler) => void;
+  connect: (pattern: string | RegExp, handler: RouteHandler) => void;
+  route: (methodOrPath: string, path?: string) => any;
+}
+
+// Usage examples
 const router = createRouter();
-router.map('/users/:id', (params: RouteParams) => {
+
+// Using with specific HTTP method
+router.get('/users/:id', (params: RouteParams) => {
   const userId: string = params.id;
   return { userId };
 });
 
-// Async handler example
-router.map('/api/users/:id', async (params: RouteParams) => {
-  const userId: string = params.id;
-  const response = await fetch(`https://api.example.com/users/${userId}`);
+// Using with POST method and async handler
+router.post('/api/users', async (params: RouteParams) => {
+  const response = await fetch('https://api.example.com/users', {
+    method: 'POST',
+    // ... request configuration
+  });
   return response.json();
 });
 
-// Type checking works correctly for both sync and async handlers
-const syncResult = router.route('/users/123');           // any
-const asyncResult = router.route('/api/users/123');      // Promise<any>
+// Using wildcards with type safety
+router.get('/files/*', (params: RouteParams) => {
+  console.log('Single wildcard path:', params.wildcard);
+});
+
+router.get('/*/*/*', (params: RouteParams) => {
+  console.log('Multiple wildcard segments:', params.wildcards);
+});
+```
+
+## HTTP Method Support
+
+The router supports all standard HTTP methods:
+
+```javascript
+const router = createRouter();
+
+// GET request
+router.get('/api/users', (params) => {
+  // Handle GET request
+});
+
+// POST request
+router.post('/api/users', (params) => {
+  // Handle POST request
+});
+
+// PUT request
+router.put('/api/users/:id', (params) => {
+  // Handle PUT request
+});
+
+// DELETE request
+router.delete('/api/users/:id', (params) => {
+  // Handle DELETE request
+});
+
+// Other supported methods
+router.head('/api/status', (params) => {});
+router.options('/api/users', (params) => {});
+router.patch('/api/users/:id', (params) => {});
+router.trace('/api/debug', (params) => {});
+router.connect('/api/tunnel', (params) => {});
 ```
 
 ## License
