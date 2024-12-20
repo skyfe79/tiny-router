@@ -34,7 +34,7 @@ router.route('/users/123'); // User ID: 123
 ### CommonJS
 
 ```javascript
-const createTinyRouter = require('@skyfe79/tiny-router');
+const { createTinyRouter } = require('@skyfe79/tiny-router');
 
 const router = createTinyRouter();
 

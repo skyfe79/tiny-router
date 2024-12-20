@@ -41,7 +41,7 @@ interface ParsePatternResult {
  * 라우터 함수를 생성합니다.
  * @returns {Router} 라우터 함수와 라우트 매핑 함수를 포함하는 객체
  */
-const createTinyRouter = (): Router => {
+const createTinyRouterImpl = (): Router => {
   const routes = new Map<string, RouteInfo>();
 
   /**
@@ -73,7 +73,7 @@ const createTinyRouter = (): Router => {
           regexPattern = regexPattern.replace(param, `(${constraint})`);
         }
       } else if (isOptional) {
-        // 선택적 매개변수의 경우 해당 세그먼트를 선택적으로 만듦
+        // 선택적 매개변수 경우 해당 세그먼트를 선택적으로 만듦
         const segment = regexPattern.match(new RegExp(`/[^/]*${param}`))?.[0];
         if (segment) {
           regexPattern = regexPattern.replace(
@@ -261,4 +261,7 @@ const createTinyRouter = (): Router => {
   };
 };
 
-export default createTinyRouter; 
+// ESM default export
+export default createTinyRouterImpl;
+// CommonJS named export
+export const createTinyRouter = createTinyRouterImpl; 
