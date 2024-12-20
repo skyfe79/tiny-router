@@ -8,10 +8,13 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -67,7 +70,7 @@ jobs:
         run: |
           git add package.json
           git commit -m "chore: bump version to ${{ steps.bump-version.outputs.new }}"
-          git push
+          git push origin HEAD:main
 
       - name: Publish to NPM
         run: npm publish
