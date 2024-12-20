@@ -4,11 +4,11 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['src/**/*.{test,spec}.js'],
+    include: ['tests/**/*.{test,spec}.js'],
     coverage: {
       reporter: ['text', 'json', 'html'],
       include: ['src/**/*.js'],
-      exclude: ['src/**/*.{test,spec}.js']
+      exclude: ['tests/**/*.{test,spec}.js']
     }
   }
 }); 
