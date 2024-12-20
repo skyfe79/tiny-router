@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index';
+import createTinyRouter from '../src/index';
 import type { RouteParams } from '../src/index';
 
 describe('Parameter Handling', () => {
   it('should handle regex constrained parameters', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map('/users/:userId(\\d+)', (params) => {
@@ -19,7 +19,7 @@ describe('Parameter Handling', () => {
   });
 
   it('should handle optional parameters', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map('/posts/:page?', (params) => {
@@ -36,7 +36,7 @@ describe('Parameter Handling', () => {
   });
 
   it('should handle multiple parameters in one route', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map('/users/:userId/posts/:postId', (params) => {
@@ -48,7 +48,7 @@ describe('Parameter Handling', () => {
   });
 
   it('should handle consecutive parameters', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map('/api/:version/:resource/:id', (params) => {

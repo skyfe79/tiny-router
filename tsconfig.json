@@ -2,16 +2,15 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "lib": ["ES2020", "DOM"],
-    "moduleResolution": "node",
-    "strict": true,
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
+    "lib": ["ES2020"],
     "declaration": true,
-    "outDir": "./dist",
-    "skipLibCheck": true
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node"
   },
-  "include": ["src/**/*", "tests/async-handler.test.ts"],
-  "exclude": ["node_modules", "dist", "tests"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
 } 

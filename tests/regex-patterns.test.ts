@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index';
+import createTinyRouter from '../src/index';
 import type { RouteParams } from '../src/index';
 
 describe('Regex Pattern Handling', () => {
   it('should handle regex patterns directly', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map(/^\/users\/(\d+)$/, (params) => {
@@ -19,7 +19,7 @@ describe('Regex Pattern Handling', () => {
   });
 
   it('should handle complex regex patterns', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map('/users/:id([A-Z]{2}\\d{3})', (params) => {

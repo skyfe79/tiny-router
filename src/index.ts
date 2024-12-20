@@ -41,7 +41,7 @@ interface ParsePatternResult {
  * 라우터 함수를 생성합니다.
  * @returns {Router} 라우터 함수와 라우트 매핑 함수를 포함하는 객체
  */
-const createRouter = (): Router => {
+const createTinyRouter = (): Router => {
   const routes = new Map<string, RouteInfo>();
 
   /**
@@ -261,4 +261,4 @@ const createRouter = (): Router => {
   };
 };
 
-export default createRouter; 
+export default createTinyRouter; 

@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index';
+import createTinyRouter from '../src/index';
 import type { RouteParams } from '../src/index';
 
 describe('Wildcard Handling', () => {
   it('should handle wildcard patterns', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map('/files/*', (params) => {
@@ -16,7 +16,7 @@ describe('Wildcard Handling', () => {
   });
 
   it('should handle multiple wildcards', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map('/*/*/*', (params) => {
@@ -30,7 +30,7 @@ describe('Wildcard Handling', () => {
   });
 
   it('should handle route priority correctly', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     const results: string[] = [];
 
     router.map('/items/:id', () => {

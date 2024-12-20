@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index';
+import createTinyRouter from '../src/index';
 
 describe('Async Handler Tests', () => {
   it('should handle async route handler', async () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     router.map('/users/:id', async (params) => {
       return { id: params.id, name: 'John Doe' };
     });
@@ -13,7 +13,7 @@ describe('Async Handler Tests', () => {
   });
 
   it('should handle async route handler with error', async () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     router.map('/users/:id', async () => {
       throw new Error('User not found');
     });
@@ -22,7 +22,7 @@ describe('Async Handler Tests', () => {
   });
 
   it('should handle multiple async operations', async () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     router.map('/posts/:id/comments', async (params) => {
       const post = { id: params.id, title: 'Test Post' };
       const comments = [
@@ -44,7 +44,7 @@ describe('Async Handler Tests', () => {
   });
 
   it('should handle async route with Promise.all', async () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     router.map('/data/:id', async (params) => {
       const [userData, postData] = await Promise.all([
         Promise.resolve({ id: params.id, name: 'John' }),
@@ -65,7 +65,7 @@ describe('Async Handler Tests', () => {
   });
 
   it('should handle mixed sync and async routes', async () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     
     // Sync route
     router.map('/sync/:id', (params) => {
@@ -85,7 +85,7 @@ describe('Async Handler Tests', () => {
   });
 
   it('should handle async route with delay', async () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     router.map('/delayed/:id', async (params) => {
       await new Promise(resolve => setTimeout(resolve, 100));
       return { id: params.id, delayed: true };
@@ -96,7 +96,7 @@ describe('Async Handler Tests', () => {
   });
 
   it('should handle concurrent async requests', async () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let counter = 0;
     
     router.map('/concurrent/:id', async (params) => {

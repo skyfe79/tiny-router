@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index';
+import createTinyRouter from '../src/index';
 
 describe('Router', () => {
   describe('Basic Routing', () => {
     it('should handle simple routes', () => {
-      const router = createRouter();
+      const router = createTinyRouter();
       let called = false;
 
       router.get('/test', () => {
@@ -18,7 +18,7 @@ describe('Router', () => {
     });
 
     it('should handle different HTTP methods', () => {
-      const router = createRouter();
+      const router = createTinyRouter();
       const results: Record<string, string> = {};
 
       router.get('/api', () => {
@@ -41,7 +41,7 @@ describe('Router', () => {
 
   describe('Parameter Handling', () => {
     it('should handle URL parameters', () => {
-      const router = createRouter();
+      const router = createTinyRouter();
       let params: any;
 
       router.get('/user/:id', (p) => {
@@ -54,7 +54,7 @@ describe('Router', () => {
     });
 
     it('should handle optional parameters', () => {
-      const router = createRouter();
+      const router = createTinyRouter();
       let params: any;
 
       router.get('/user/:name?', (p) => {
@@ -72,7 +72,7 @@ describe('Router', () => {
     });
 
     it('should handle regex constraints', () => {
-      const router = createRouter();
+      const router = createTinyRouter();
       let params: any;
 
       router.get('/user/:id(\\d+)', (p) => {
@@ -90,7 +90,7 @@ describe('Router', () => {
 
   describe('Wildcard Handling', () => {
     it('should handle single wildcard', () => {
-      const router = createRouter();
+      const router = createTinyRouter();
       let params: any;
 
       router.get('/files/*', (p) => {
@@ -103,7 +103,7 @@ describe('Router', () => {
     });
 
     it('should handle multiple wildcards', () => {
-      const router = createRouter();
+      const router = createTinyRouter();
       let params: any;
 
       router.get('/files/*/type/*', (p) => {
@@ -118,13 +118,13 @@ describe('Router', () => {
 
   describe('Edge Cases', () => {
     it('should handle non-existent routes', () => {
-      const router = createRouter();
+      const router = createTinyRouter();
       const result = router.route('/non-existent');
       expect(result).toBe(null);
     });
 
     it('should handle regex patterns', () => {
-      const router = createRouter();
+      const router = createTinyRouter();
       let called = false;
 
       router.get(/^\/test\/\d+$/, () => {

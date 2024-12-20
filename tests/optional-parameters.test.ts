@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src';
+import createTinyRouter from '../src';
 import type { RouteParams } from '../src';
 
 describe('Optional Parameters', () => {
   it('should handle both cases with and without optional parameters', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     const results: RouteParams[] = [];
 
     router.map('/posts/:page?', (params) => {
@@ -25,7 +25,7 @@ describe('Optional Parameters', () => {
   });
 
   it('should handle multiple optional parameters', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     const results: RouteParams[] = [];
 
     router.map('/users/:userId?/posts/:postId?', (params) => {
@@ -50,7 +50,7 @@ describe('Optional Parameters', () => {
   });
 
   it('should handle mixed optional and required parameters', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     const results: RouteParams[] = [];
 
     router.map('/users/:userId/posts/:postId?', (params) => {

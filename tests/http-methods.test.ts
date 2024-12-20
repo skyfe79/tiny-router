@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index';
+import createTinyRouter from '../src/index';
 import type { RouteParams } from '../src/index';
 
 describe('HTTP Methods', () => {
   it('should handle different HTTP methods for the same path', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     const results: Record<string, RouteParams> = {};
 
     router.get('/api/resource/:id', (params) => {
@@ -46,7 +46,7 @@ describe('HTTP Methods', () => {
   });
 
   it('should handle HEAD, OPTIONS, TRACE, and CONNECT methods', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     const results: Record<string, boolean> = {};
 
     router.head('/api/test', () => {
@@ -81,7 +81,7 @@ describe('HTTP Methods', () => {
   });
 
   it('should handle method case-insensitively', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let called = false;
 
     router.get('/test', () => {
@@ -94,7 +94,7 @@ describe('HTTP Methods', () => {
   });
 
   it('should support both old and new route calling styles', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let called = false;
 
     router.get('/test', () => {
@@ -111,7 +111,7 @@ describe('HTTP Methods', () => {
   });
 
   it('should return null for non-matching methods', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let called = false;
 
     router.get('/test', () => {
@@ -125,7 +125,7 @@ describe('HTTP Methods', () => {
   });
 
   it('should handle multiple methods with wildcards and parameters', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     const results: Record<string, RouteParams> = {};
 
     router.get('/api/*/users/:id', (params) => {

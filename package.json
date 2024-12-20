@@ -2,10 +2,23 @@
   "name": "@skyfe79/tiny-router",
   "version": "1.0.2",
   "description": "A tiny router implementation",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
   "scripts": {
-    "build": "tsc",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run build:types",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:types": "tsc -p tsconfig.types.json",
     "test": "vitest --config vitest.config.ts",
     "coverage": "vitest run --coverage",
     "prepublishOnly": "npm run build"

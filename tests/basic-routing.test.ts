@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index';
+import createTinyRouter from '../src/index';
 import type { RouteParams } from '../src/index';
 
 describe('Basic Routing', () => {
 
   it('should handle root path', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map('/', (params) => {
@@ -17,7 +17,7 @@ describe('Basic Routing', () => {
   });
   
   it('should handle basic parameter routes', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map('/users/:id', (params) => {
@@ -29,7 +29,7 @@ describe('Basic Routing', () => {
   });
 
   it('should return null for non-matching routes', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: string | RouteParams = 'unchanged';
 
     router.map('/users/:id', (params) => {
@@ -42,7 +42,7 @@ describe('Basic Routing', () => {
   });
 
   it('should handle paths with hyphens and dots', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map('/api/v1.0/users/:id', (params) => {
@@ -54,7 +54,7 @@ describe('Basic Routing', () => {
   });
 
   it('should handle query parameters', () => {
-    const router = createRouter();
+    const router = createTinyRouter();
     let result: RouteParams | null = null;
 
     router.map('/search/:query', (params) => {
