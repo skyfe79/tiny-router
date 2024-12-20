@@ -1,6 +1,6 @@
 {
   "name": "@skyfe79/tiny-router",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A tiny router implementation",
   "type": "module",
   "main": "./dist/cjs/index.cjs",
