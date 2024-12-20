@@ -12,6 +12,6 @@
     "outDir": "./dist",
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests/async-handler.test.ts"],
   "exclude": ["node_modules", "dist", "tests"]
 } 

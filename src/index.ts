@@ -5,7 +5,7 @@ export interface RouteParams {
 }
 
 export interface RouteHandler {
-  (params: RouteParams): any;
+  (params: RouteParams): any | Promise<any>;
 }
 
 export interface RouteInfo {

@@ -111,17 +111,63 @@ Creates a new router instance.
 A router object with the following methods:
 
 ##### `map(pattern: string | RegExp, handler: Function)`
-Maps a route pattern to a handler function.
+Maps a route pattern to a handler function. The handler can be either synchronous or asynchronous.
 
 - `pattern`: Route pattern string or regular expression
-- `handler`: Handler function for the matched path
+- `handler`: Handler function for the matched path (sync or async)
 - Returns: void
 
 ##### `route(path: string)`
-Executes the handler for the matching route.
+Executes the handler for the matching route. If the handler is async, it returns a Promise.
 
 - `path`: Path to execute
-- Returns: Result of the handler execution or `null` if no matching route is found
+- Returns: Result of the handler execution, Promise if async handler, or `null` if no matching route is found
+
+## Async Handler Support
+
+```javascript
+const router = createRouter();
+
+// Async route handler example
+router.map('/api/users/:id', async (params) => {
+  try {
+    const response = await fetch(`https://api.example.com/users/${params.id}`);
+    const user = await response.json();
+    return user;
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    throw error;
+  }
+});
+
+// Using async route
+async function handleUserRoute() {
+  try {
+    const user = await router.route('/api/users/123');
+    console.log('User data:', user);
+  } catch (error) {
+    console.error('Route error:', error);
+  }
+}
+
+// Multiple async operations example
+router.map('/api/posts/:postId/comments', async (params) => {
+  try {
+    const [post, comments] = await Promise.all([
+      fetch(`https://api.example.com/posts/${params.postId}`).then(r => r.json()),
+      fetch(`https://api.example.com/posts/${params.postId}/comments`).then(r => r.json())
+    ]);
+    
+    return {
+      post,
+      comments
+    };
+  } catch (error) {
+    console.error('Failed to fetch post and comments:', error);
+    throw error;
+  }
+});
+```
 
 ## Error Handling
 
@@ -151,15 +197,26 @@ interface RouteParams {
 }
 
 interface RouteHandler {
-  (params: RouteParams): any;
+  (params: RouteParams): any | Promise<any>;
 }
 
+// Sync handler example
 const router = createRouter();
-
 router.map('/users/:id', (params: RouteParams) => {
   const userId: string = params.id;
-  console.log('User ID:', userId);
+  return { userId };
 });
+
+// Async handler example
+router.map('/api/users/:id', async (params: RouteParams) => {
+  const userId: string = params.id;
+  const response = await fetch(`https://api.example.com/users/${userId}`);
+  return response.json();
+});
+
+// Type checking works correctly for both sync and async handlers
+const syncResult = router.route('/users/123');           // any
+const asyncResult = router.route('/api/users/123');      // Promise<any>
 ```
 
 ## License
