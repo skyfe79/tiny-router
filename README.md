@@ -5,7 +5,7 @@ A lightweight router that supports Express-style route patterns.
 ## Installation
 
 ```bash
-npm install tiny-router
+npm install @skyfe79/tiny-router
 ```
 
 ## Features
@@ -25,7 +25,7 @@ npm install tiny-router
 ### Basic Examples
 
 ```javascript
-import createRouter from 'tiny-router';
+import { createRouter } from '@skyfe79/tiny-router';
 
 const router = createRouter();
 

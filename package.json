@@ -1,5 +1,5 @@
 {
-  "name": "tiny-router",
+  "name": "@skyfe79/tiny-router",
   "version": "1.0.0",
   "description": "A tiny router implementation",
   "main": "dist/index.js",
