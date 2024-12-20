@@ -1,0 +1,75 @@
+name: Publish to NPM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Get current version
+        id: package-version
+        run: echo "::set-output name=current::$(node -p "require('./package.json').version")"
+
+      - name: Bump minor version
+        id: bump-version
+        run: |
+          current_version=${{ steps.package-version.outputs.current }}
+          IFS='.' read -ra version_parts <<< "$current_version"
+          major=${version_parts[0]}
+          minor=${version_parts[1]}
+          patch=${version_parts[2]}
+          
+          new_patch=$((patch + 1))
+          if [ $new_patch -gt 99999 ]; then
+            new_minor=$((minor + 1))
+            new_patch=0
+            
+            if [ $new_minor -gt 99999 ]; then
+              major=$((major + 1))
+              new_minor=0
+            fi
+          else
+            new_minor=$minor
+          fi
+          
+          new_version="$major.$new_minor.$new_patch"
+          echo "::set-output name=new::$new_version"
+          npm version $new_version --no-git-tag-version
+
+      - name: Build
+        run: npm run build
+
+      - name: Commit and Push changes
+        run: |
+          git add package.json
+          git commit -m "chore: bump version to ${{ steps.bump-version.outputs.new }}"
+          git push
+
+      - name: Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
