@@ -19,7 +19,7 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "build:cjs": "tsc -p tsconfig.cjs.json && node scripts/rename-cjs.js",
     "build:types": "tsc -p tsconfig.types.json",
-    "test": "npm run test:esm && npm run test:cjs",
+    "test": "npm run build && npm run test:esm && npm run test:cjs",
     "test:esm": "vitest --config vitest.config.ts",
     "test:cjs": "jest --config jest.config.cjs",
     "coverage": "vitest run --coverage",
