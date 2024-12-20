@@ -1,82 +1,167 @@
 # tiny-router
 
-Express 스타일의 라우트 패턴을 지원하는 작고 가벼운 라우터입니다.
+A lightweight router that supports Express-style route patterns.
 
-## 설치
+## Installation
 
 ```bash
 npm install tiny-router
 ```
 
-## 특징
+## Features
 
-- Express 스타일의 라우트 패턴 지원
-- 기본 파라미터 (`:param`)
-- 정규식 제약 조건 (`:userId(\d+)`)
-- 선택적 파라미터 (`:param?`)
-- 와일드카드 패턴 (`*`)
-- 하이픈(-)과 점(.) 포함 경로 지원
-- 작고 가벼운 구현
+- Express-style route pattern support
+- Basic parameters (`:param`)
+- Regular expression constraints (`:userId(\d+)`)
+- Optional parameters (`:param?`)
+- Wildcard patterns (`*`)
+- Support for paths with hyphens (-) and dots (.)
+- Lightweight implementation
 
-## 사용법
+## Usage
+
+### Basic Examples
 
 ```javascript
 import createRouter from 'tiny-router';
 
 const router = createRouter();
 
-// 기본 파라미터
+// Basic route
+router.map('/', (params) => {
+  console.log('Home page');
+});
+
+// Basic parameter
 router.map('/users/:id', (params) => {
   console.log('User ID:', params.id);
 });
 
-// 정규식 제약 조건
+// Multiple parameters
+router.map('/users/:userId/posts/:postId', (params) => {
+  console.log('User ID:', params.userId);
+  console.log('Post ID:', params.postId);
+});
+
+// Regular expression constraints
 router.map('/users/:userId(\d+)', (params) => {
   console.log('Numeric User ID:', params.userId);
 });
 
-// 선택적 파라미터
+// Optional parameters
 router.map('/posts/:page?', (params) => {
   console.log('Page:', params.page || 'default');
 });
 
-// 와일드카드
+// Wildcard
 router.map('/files/*', (params) => {
   console.log('File path:', params.wildcard);
 });
 
-// 다중 와일드카드
+// Multiple wildcards
 router.map('/*/*/*', (params) => {
   console.log('Segments:', params.wildcards);
 });
-
-// 라우트 실행
-router.route('/users/123');  // User ID: 123
-router.route('/posts');      // Page: default
-router.route('/files/docs/example.txt');  // File path: docs/example.txt
-router.route('/products/electronics/phones');  // Segments: ['products', 'electronics', 'phones']
 ```
 
-## API
+### Real-world Examples
+
+```javascript
+const router = createRouter();
+
+// Blog routes
+router.map('/blog/:slug', (params) => {
+  // Handle blog post with slug
+  console.log('Blog post:', params.slug);
+});
+
+router.map('/blog/category/:category', (params) => {
+  // Handle blog category
+  console.log('Blog category:', params.category);
+});
+
+// API routes with version and constraints
+router.map('/api/v:version(\d+)/users/:userId(\d+)', (params) => {
+  console.log('API Version:', params.version);
+  console.log('User ID:', params.userId);
+});
+
+// File system routes
+router.map('/assets/*', (params) => {
+  // Handle static assets
+  console.log('Asset path:', params.wildcard);
+});
+
+// Example route executions
+router.route('/users/123');                    // User ID: 123
+router.route('/posts');                        // Page: default
+router.route('/posts/2');                      // Page: 2
+router.route('/files/docs/example.txt');       // File path: docs/example.txt
+router.route('/blog/my-awesome-post');         // Blog post: my-awesome-post
+router.route('/api/v1/users/456');            // API Version: 1, User ID: 456
+router.route('/products/electronics/phones');   // Segments: ['products', 'electronics', 'phones']
+```
+
+## API Reference
 
 ### `createRouter()`
-새로운 라우터 인스턴스를 생성합니다.
+Creates a new router instance.
 
-#### 반환값
-라우터 객체는 다음 메서드들을 포함합니다:
+#### Returns
+A router object with the following methods:
 
 ##### `map(pattern: string | RegExp, handler: Function)`
-라우트 패턴과 핸들러를 매핑합니다.
+Maps a route pattern to a handler function.
 
-- `pattern`: 라우트 패턴 문자열 또는 정규식
-- `handler`: 매칭된 경로에 대한 처리 함수
+- `pattern`: Route pattern string or regular expression
+- `handler`: Handler function for the matched path
+- Returns: void
 
 ##### `route(path: string)`
-주어진 경로에 대해 매칭되는 핸들러를 실행합니다.
+Executes the handler for the matching route.
 
-- `path`: 실행할 경로
-- 반환값: 핸들러의 실행 결과 또는 매칭되는 라우트가 없을 경우 `null`
+- `path`: Path to execute
+- Returns: Result of the handler execution or `null` if no matching route is found
 
-## 라이선스
+## Error Handling
+
+```javascript
+const router = createRouter();
+
+// Add error handling to your routes
+router.map('/api/:resource', (params) => {
+  try {
+    // Your route logic here
+    if (!params.resource) {
+      throw new Error('Resource not specified');
+    }
+    return `Handling ${params.resource}`;
+  } catch (error) {
+    console.error('Route error:', error);
+    return null;
+  }
+});
+```
+
+## TypeScript Support
+
+```typescript
+interface RouteParams {
+  [key: string]: string;
+}
+
+interface RouteHandler {
+  (params: RouteParams): any;
+}
+
+const router = createRouter();
+
+router.map('/users/:id', (params: RouteParams) => {
+  const userId: string = params.id;
+  console.log('User ID:', userId);
+});
+```
+
+## License
 
 MIT 
