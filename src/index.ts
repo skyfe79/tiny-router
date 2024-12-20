@@ -1,14 +1,14 @@
-interface RouteParams {
+export interface RouteParams {
   [key: string]: string | string[] | undefined;
   wildcards?: string[];
   wildcard?: string;
 }
 
-interface RouteHandler {
+export interface RouteHandler {
   (params: RouteParams): any;
 }
 
-interface RouteInfo {
+export interface RouteInfo {
   handlers: Map<string, RouteHandler>;
   regex: RegExp;
   paramNames: string[];
@@ -16,7 +16,7 @@ interface RouteInfo {
   wildcardCount: number;
 }
 
-interface Router {
+export interface Router {
   map: (pattern: string | RegExp, handler: RouteHandler) => void;
   get: (pattern: string | RegExp, handler: RouteHandler) => void;
   post: (pattern: string | RegExp, handler: RouteHandler) => void;
@@ -58,26 +58,32 @@ const createRouter = (): Router => {
     let regexPattern = pattern;
     const wildcardCount = (pattern.match(/\*/g) || []).length;
 
-    // 정규식 제약 조건이 있는 파라미터 처리 (예: :userId(\d+))
-    regexPattern = regexPattern.replace(/:[^/()]+\([^)]+\)/g, (match) => {
-      const name = match.match(/:[^(/]+/)?.[0].slice(1) ?? '';
-      const constraint = match.match(/\(.*\)/)?.[0] ?? '';
-      paramNames.push(name);
-      return constraint;
-    });
-
-    // 선택적 파라미터 처리 (예: :param?)
-    regexPattern = regexPattern.replace(/:[^/]+\?/g, (match) => {
-      const name = match.slice(1, -1);
-      paramNames.push(name);
-      return '([^/]*)';
-    });
-
-    // 기본 파라미터 처리 (예: :param)
-    regexPattern = regexPattern.replace(/:[^/]+/g, (match) => {
-      const name = match.slice(1);
-      paramNames.push(name);
-      return '([^/]+)';
+    // 모든 파라미터를 한 번에 찾아서 순서대로 처리
+    const params = pattern.match(/:[^/]+(\([^)]+\))?(\?)?/g) || [];
+    params.forEach(param => {
+      const hasConstraint = param.includes('(');
+      const isOptional = param.endsWith('?');
+      const name = param.slice(1, hasConstraint ? param.indexOf('(') : (isOptional ? -1 : undefined));
+      
+      paramNames.push(isOptional ? name + '?' : name);
+      
+      if (hasConstraint) {
+        const constraint = param.match(/\(([^)]+)\)/)?.[1];
+        if (constraint) {
+          regexPattern = regexPattern.replace(param, `(${constraint})`);
+        }
+      } else if (isOptional) {
+        // 선택적 매개변수의 경우 해당 세그먼트를 선택적으로 만듦
+        const segment = regexPattern.match(new RegExp(`/[^/]*${param}`))?.[0];
+        if (segment) {
+          regexPattern = regexPattern.replace(
+            segment,
+            `(?:/([^/]+))?`
+          );
+        }
+      } else {
+        regexPattern = regexPattern.replace(param, '([^/]+)');
+      }
     });
 
     // 슬래시 이스케이프
@@ -88,7 +94,7 @@ const createRouter = (): Router => {
       return charClass || '\\' + hyphen;
     });
 
-    // 와일드카드 패턴 처��� (*) - 여러 세그먼트 매칭
+    // 와일드카드 패턴 처리 (*) - 여러 세그먼트 매칭
     const hasWildcard = pattern.includes('*');
     if (hasWildcard) {
       if (wildcardCount > 1) {
@@ -100,8 +106,15 @@ const createRouter = (): Router => {
       }
     }
 
+    // 선택적 매개변수가 있는 경우 기본 경로도 매칭되도록 함
+    if (pattern.includes('?')) {
+      regexPattern = `^${regexPattern}$|^${regexPattern.split('(?:')[0]}$`;
+    } else {
+      regexPattern = `^${regexPattern}$`;
+    }
+
     return {
-      regex: new RegExp(`^${regexPattern}$`),
+      regex: new RegExp(regexPattern),
       paramNames,
       hasWildcard,
       wildcardCount
@@ -174,6 +187,8 @@ const createRouter = (): Router => {
       targetPath = path;
     }
 
+    // 경로 정규화: 마지막 슬래시 제거
+    targetPath = targetPath.endsWith('/') ? targetPath.slice(0, -1) : targetPath;
     const pathWithoutQuery = targetPath.split('?')[0];
     const upperMethod = method.toUpperCase();
     
@@ -207,7 +222,22 @@ const createRouter = (): Router => {
         }
 
         routeInfo.paramNames.forEach((name) => {
-          params[name] = match[matchIndex++] || '';
+          const value = match[matchIndex];
+          const isOptional = name.endsWith('?');
+          // 선택적 매개변수의 ? 제거
+          const cleanName = name.replace('?', '');
+          
+          // 선택적 매개변수가 아닌데 값이 없는 경우에만 null 반환
+          if (!isOptional && value == null) {
+            return null;
+          }
+          
+          // 값이 있는 경우에만 파라미터에 추가
+          if (value != null) {
+            params[cleanName] = value;
+          }
+          
+          matchIndex++;
         });
         
         return handler(params);

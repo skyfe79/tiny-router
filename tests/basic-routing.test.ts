@@ -1,10 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index.ts';
+import createRouter from '../src/index';
+import type { RouteParams } from '../src/index';
 
 describe('Basic Routing', () => {
   it('should handle basic parameter routes', () => {
     const router = createRouter();
-    let result = null;
+    let result: RouteParams | null = null;
 
     router.map('/users/:id', (params) => {
       result = params;
@@ -16,7 +17,7 @@ describe('Basic Routing', () => {
 
   it('should return null for non-matching routes', () => {
     const router = createRouter();
-    let result = 'unchanged';
+    let result: string | RouteParams = 'unchanged';
 
     router.map('/users/:id', (params) => {
       result = params;
@@ -29,7 +30,7 @@ describe('Basic Routing', () => {
 
   it('should handle paths with hyphens and dots', () => {
     const router = createRouter();
-    let result = null;
+    let result: RouteParams | null = null;
 
     router.map('/api/v1.0/users/:id', (params) => {
       result = params;
@@ -41,7 +42,7 @@ describe('Basic Routing', () => {
 
   it('should handle query parameters', () => {
     const router = createRouter();
-    let result = null;
+    let result: RouteParams | null = null;
 
     router.map('/search/:query', (params) => {
       result = params;

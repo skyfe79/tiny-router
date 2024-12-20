@@ -65,8 +65,10 @@ describe('Router', () => {
       router.route('/user/john');
       expect(params.name).toBe('john');
 
+      params = null;
+
       router.route('/user');
-      expect(params.name).toBe('');
+      expect(params).toEqual({});
     });
 
     it('should handle regex constraints', () => {
