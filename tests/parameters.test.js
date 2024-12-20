@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index.js';
+import createRouter from '../src/index.ts';
 
 describe('Parameter Handling', () => {
   it('should handle regex constrained parameters', () => {

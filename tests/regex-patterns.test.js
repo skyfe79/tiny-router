@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index.js';
+import createRouter from '../src/index.ts';
 
 describe('Regex Pattern Handling', () => {
   it('should handle pure regex patterns', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index.js';
+import createRouter from '../src/index.ts';
 
 describe('Basic Routing', () => {
   it('should handle basic parameter routes', () => {

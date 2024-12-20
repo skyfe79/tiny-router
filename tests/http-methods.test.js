@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import createRouter from '../src/index.js';
+import createRouter from '../src/index.ts';
 
 describe('HTTP Methods', () => {
   it('should handle different HTTP methods for the same path', () => {
