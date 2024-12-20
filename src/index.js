@@ -185,19 +185,20 @@ const createRouter = () => {
         const params = {};
         let matchIndex = 1;
         
-        // 파라미터 매칭 처리
-        routeInfo.paramNames.forEach((name) => {
-          params[name] = match[matchIndex++] || '';
-        });
-        
         // 와일드카드 매칭 처리
         if (routeInfo.hasWildcard) {
           if (routeInfo.wildcardCount > 1) {
             params.wildcards = Array.from({ length: routeInfo.wildcardCount }, (_, i) => match[i + 1]);
+            matchIndex += routeInfo.wildcardCount;
           } else {
-            params.wildcard = match[1];
+            params.wildcard = match[matchIndex++];
           }
         }
+
+        // 파라미터 매칭 처리
+        routeInfo.paramNames.forEach((name) => {
+          params[name] = match[matchIndex++] || '';
+        });
         
         return handler(params);
       }
